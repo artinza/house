@@ -1,148 +1,109 @@
 {
  "listings": [
   {
-   "id": "seed_939western",
-   "address": "939 Western Rd",
-   "area": "Near West",
+   "id": "seed_1231richmond",
+   "address": "1231 Richmond St",
+   "area": "Old North",
    "type": "apt",
-   "price": 1799,
+   "price": 1805,
    "basis": "total",
    "beds": 2,
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 1799
+     "p": 1805
     }
    ],
    "priceDrop": false,
    "detail": false,
-   "flags": [],
-   "pricePlus": true,
-   "distKm": 2.0,
-   "builtYear": 1954,
-   "utilities": "partial",
-   "utilNote": "water and heat in",
-   "deal": "1 month free"
+   "flags": []
   },
   {
-   "id": "seed_talbotterrace",
-   "address": "Talbot Terrace",
-   "area": "Downtown",
+   "id": "seed_205oxfordE",
+   "address": "205 Oxford St E",
+   "area": "East London",
    "type": "apt",
-   "price": 2144,
-   "basis": "total",
+   "price": 775,
+   "basis": "perBed",
    "beds": 2,
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 2144
+     "p": 775
     }
    ],
    "priceDrop": false,
    "detail": false,
    "flags": [
-    "new build"
+    "may be last year's listing"
    ],
-   "pricePlus": true,
-   "distKm": 3.0,
-   "deal": "$1,400 off or 1 month free",
-   "notes": "Seed data from a manual search on Nov 24. The first daily refresh replaces it with live data."
+   "utilities": "extra"
   },
   {
-   "id": "seed_onerichmondrow",
-   "address": "One Richmond Row",
+   "id": "seed_498queens",
+   "address": "498 Queens Ave",
    "area": "Downtown",
    "type": "apt",
-   "price": 2235,
+   "price": 1770,
    "basis": "total",
    "beds": 2,
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 2235
+     "p": 1770
     }
    ],
    "priceDrop": false,
    "detail": false,
    "flags": [],
-   "pricePlus": true,
-   "builtYear": 2021,
-   "distKm": 3.9
+   "pricePlus": true
   },
   {
-   "id": "seed_695richmond_1508",
-   "address": "695 Richmond St #1508",
-   "area": "Downtown",
+   "id": "seed_500gordon",
+   "address": "500 Gordon St",
+   "area": "Near West",
    "type": "apt",
-   "price": 2190,
+   "price": 1675,
    "basis": "total",
    "beds": 2,
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 2190
+     "p": 1675
     }
    ],
    "priceDrop": false,
    "detail": false,
    "flags": [],
-   "distKm": 2.4
-  },
-  {
-   "id": "seed_600proudfoot",
-   "address": "600 Proudfoot Ln",
-   "area": "North London",
-   "type": "apt",
-   "price": 2099,
-   "basis": "total",
-   "beds": 2,
-   "source": "Manual search (Nov 24)",
-   "url": "",
-   "status": "active",
-   "isNew": true,
-   "firstSeen": "2026-11-24",
-   "lastSeen": "2026-11-24",
-   "missed": 0,
-   "priceHistory": [
-    {
-     "d": "2026-11-24",
-     "p": 2099
-    }
-   ],
-   "priceDrop": false,
-   "detail": false,
-   "flags": [],
-   "pricePlus": true,
-   "builtYear": 2005,
-   "distKm": 3.9
+   "pricePlus": true
   },
   {
    "id": "seed_540proudfoot",
@@ -155,7 +116,7 @@
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
@@ -183,7 +144,7 @@
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
@@ -202,6 +163,91 @@
    "distKm": 3.6
   },
   {
+   "id": "seed_600proudfoot",
+   "address": "600 Proudfoot Ln",
+   "area": "North London",
+   "type": "apt",
+   "price": 2099,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": false,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2099
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true,
+   "builtYear": 2005,
+   "distKm": 3.9
+  },
+  {
+   "id": "seed_695richmond_1508",
+   "address": "695 Richmond St #1508",
+   "area": "Downtown",
+   "type": "apt",
+   "price": 2190,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": false,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2190
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "distKm": 2.4
+  },
+  {
+   "id": "seed_939western",
+   "address": "939 Western Rd",
+   "area": "Near West",
+   "type": "apt",
+   "price": 1799,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": false,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1799
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true,
+   "distKm": 2.0,
+   "builtYear": 1954,
+   "utilities": "partial",
+   "utilNote": "water and heat in",
+   "deal": "1 month free"
+  },
+  {
    "id": "seed_capulet3",
    "address": "Capulet Ln",
    "area": "North London",
@@ -212,7 +258,7 @@
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
@@ -240,7 +286,7 @@
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
@@ -260,57 +306,63 @@
    "distKm": 1.8
   },
   {
-   "id": "seed_205oxfordE",
-   "address": "205 Oxford St E",
-   "area": "East London",
+   "id": "seed_onerichmondrow",
+   "address": "One Richmond Row",
+   "area": "Downtown",
    "type": "apt",
-   "price": 775,
-   "basis": "perBed",
-   "beds": 2,
-   "source": "Manual search (Nov 24)",
-   "url": "",
-   "status": "active",
-   "isNew": true,
-   "firstSeen": "2026-11-24",
-   "lastSeen": "2026-11-24",
-   "missed": 0,
-   "priceHistory": [
-    {
-     "d": "2026-11-24",
-     "p": 775
-    }
-   ],
-   "priceDrop": false,
-   "detail": false,
-   "flags": [
-    "may be last year's listing"
-   ],
-   "utilities": "extra"
-  },
-  {
-   "id": "seed_1231richmond",
-   "address": "1231 Richmond St",
-   "area": "Old North",
-   "type": "apt",
-   "price": 1805,
+   "price": 2235,
    "basis": "total",
    "beds": 2,
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 1805
+     "p": 2235
     }
    ],
    "priceDrop": false,
    "detail": false,
-   "flags": []
+   "flags": [],
+   "pricePlus": true,
+   "builtYear": 2021,
+   "distKm": 3.9
+  },
+  {
+   "id": "seed_talbotterrace",
+   "address": "Talbot Terrace",
+   "area": "Downtown",
+   "type": "apt",
+   "price": 2144,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": false,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2144
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "new build"
+   ],
+   "pricePlus": true,
+   "distKm": 3.0,
+   "deal": "$1,400 off or 1 month free",
+   "notes": "Seed data from a manual search on Nov 24. The first daily refresh replaces it with live data."
   },
   {
    "id": "seed_thew_2bd",
@@ -323,7 +375,7 @@
    "source": "Manual search (Nov 24)",
    "url": "",
    "status": "active",
-   "isNew": true,
+   "isNew": false,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
    "missed": 0,
@@ -342,56 +394,571 @@
    "distKm": 5.5
   },
   {
-   "id": "seed_498queens",
-   "address": "498 Queens Ave",
-   "area": "Downtown",
-   "type": "apt",
-   "price": 1770,
-   "basis": "total",
-   "beds": 2,
-   "source": "Manual search (Nov 24)",
-   "url": "",
-   "status": "active",
-   "isNew": true,
+   "id": "westerno_29590",
+   "address": "255 Regent St.",
+   "source": "Western Off-Campus Housing",
+   "srcId": "29590",
+   "url": "https://offcampus.uwo.ca/Listings/Details/29590",
+   "area": "Old North",
+   "type": "house",
+   "price": 890,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "partial",
+   "flags": [
+    "renovated"
+   ],
+   "beds": 3,
+   "utilNote": "High Speed internet and water included",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Amazing location 2 blocks from UWO and 5 blocks from Richmond Row.",
+   "laundry": "yes",
+   "furnished": "common",
+   "ac": true,
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 1770
+     "p": 890
     }
    ],
-   "priceDrop": false,
-   "detail": false,
-   "flags": [],
-   "pricePlus": true
+   "priceDrop": false
   },
   {
-   "id": "seed_500gordon",
-   "address": "500 Gordon St",
+   "id": "westerno_35849",
+   "address": "81 Rollingwood",
+   "source": "Western Off-Campus Housing",
+   "srcId": "35849",
+   "url": "https://offcampus.uwo.ca/Listings/Details/35849",
    "area": "Near West",
-   "type": "apt",
-   "price": 1675,
-   "basis": "total",
-   "beds": 2,
-   "source": "Manual search (Nov 24)",
-   "url": "",
-   "status": "active",
-   "isNew": true,
+   "type": "house",
+   "price": 825,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [
+    "renovated"
+   ],
+   "beds": 5,
+   "baths": 2.5,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Beautifully updated with stainless steel appliances and spacious throughout.",
+   "laundry": "yes",
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
    "firstSeen": "2026-11-24",
    "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
    "missed": 0,
    "priceHistory": [
     {
      "d": "2026-11-24",
-     "p": 1675
+     "p": 825
     }
    ],
-   "priceDrop": false,
-   "detail": false,
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_47478",
+   "address": "57 Gunn Street",
+   "source": "Western Off-Campus Housing",
+   "srcId": "47478",
+   "url": "https://offcampus.uwo.ca/Listings/Details/47478",
+   "area": "Near South",
+   "type": "apt",
+   "price": 850,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": "included",
+   "flags": [
+    "renovated"
+   ],
+   "beds": 5,
+   "baths": 2,
+   "utilNote": "including utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Large, upgraded 5 bedroom upper floor unit purpose-built for students.",
+   "laundry": "yes",
+   "ac": true,
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 850
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_58209",
+   "address": "106 Paperbirch Cres",
+   "source": "Western Off-Campus Housing",
+   "srcId": "58209",
+   "url": "https://offcampus.uwo.ca/Listings/Details/58209",
+   "area": "Near West",
+   "type": "house",
+   "price": 850,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": "included",
    "flags": [],
-   "pricePlus": true
+   "beds": 3,
+   "leaseMonths": 12,
+   "parking": 4,
+   "baths": 1,
+   "distKm": 1.9,
+   "utilNote": "all-inclusive",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Duplex student house in a quiet residential crescent.",
+   "laundry": "yes",
+   "furnished": "full",
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 850
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63533",
+   "address": "8 Gower",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63533",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63533",
+   "area": "Near South",
+   "type": "house",
+   "price": 850,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": "included",
+   "flags": [],
+   "beds": 4,
+   "parking": 2,
+   "baths": 2,
+   "distKm": 2.7,
+   "utilNote": "utilities included",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Spacious 5-bedroom house with open-concept kitchen and living room.",
+   "laundry": "yes",
+   "furnished": "full",
+   "ac": true,
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 850
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63563",
+   "address": "51 St. George Street",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63563",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63563",
+   "area": "Downtown",
+   "type": "house",
+   "price": 925,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [],
+   "beds": 4,
+   "parking": 2,
+   "baths": 2,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "mature students",
+   "notes": "Spacious home located in the desirable Old North neighborhood.",
+   "laundry": "yes",
+   "privateBath": false,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 925
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63639",
+   "address": "349 Oxford",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63639",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63639",
+   "area": "Downtown",
+   "type": "house",
+   "price": 825,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [],
+   "beds": 6,
+   "parking": 2,
+   "baths": 2,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Large open concept kitchen, dining and living room with large equal size bedrooms.",
+   "laundry": "yes",
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 825
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63657",
+   "address": "195 Wharncliffe Rd",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63657",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63657",
+   "area": "Near South",
+   "type": "house",
+   "price": 750,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": "included",
+   "flags": [],
+   "beds": 4,
+   "baths": 2,
+   "utilNote": "including all utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Beautiful Victorian home with spacious, unique rooms.",
+   "privateBath": false,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 750
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63729",
+   "address": "Riverside Dr & Britannia Ave",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63729",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63729",
+   "area": "Near South",
+   "type": "house",
+   "price": 995,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": null,
+   "flags": [
+    "new build"
+   ],
+   "beds": 7,
+   "baths": 7.5,
+   "utilNote": "unknown",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Brand new, modern home offering luxury, space, and convenience.",
+   "privateBath": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 995
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63738",
+   "address": "Oxford St &Colborne St.",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63738",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63738",
+   "area": "Downtown",
+   "type": "house",
+   "price": 850,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": "included",
+   "flags": [],
+   "beds": 4,
+   "parking": 2,
+   "baths": 2,
+   "utilNote": "including utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Large open concept kitchen, dining and living room with large equal size bedrooms.",
+   "laundry": "yes",
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 850
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63753",
+   "address": "46 Essex",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63753",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63753",
+   "area": "Near South",
+   "type": "house",
+   "price": 1295,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [
+    "new build",
+    "renovated"
+   ],
+   "beds": 3,
+   "baths": 3.5,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Brand new building offering privacy with a private bathroom in each room.",
+   "laundry": "yes",
+   "ac": true,
+   "privateBath": true,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1295
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_63953",
+   "address": "230 Bernard Ave",
+   "source": "Western Off-Campus Housing",
+   "srcId": "63953",
+   "url": "https://offcampus.uwo.ca/Listings/Details/63953",
+   "area": "Old North",
+   "type": "house",
+   "price": 850,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [],
+   "beds": 5,
+   "baths": 2,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Old North 5 bed house with all bedrooms upstairs.",
+   "ac": true,
+   "privateBath": false,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 850
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_64143",
+   "address": "1035 Brough Street",
+   "source": "Western Off-Campus Housing",
+   "srcId": "64143",
+   "url": "https://offcampus.uwo.ca/Listings/Details/64143",
+   "area": "Old North",
+   "type": "house",
+   "price": 900,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [],
+   "beds": 5,
+   "leaseMonths": 12,
+   "parking": 2,
+   "baths": 2.5,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Prime spot on Brough Street, just steps away from Western University's main gates.",
+   "privateBath": false,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 900
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_64158",
+   "address": "Empress Ave & Wharncliffe Rd N",
+   "source": "Western Off-Campus Housing",
+   "srcId": "64158",
+   "url": "https://offcampus.uwo.ca/Listings/Details/64158",
+   "area": "Old North",
+   "type": "house",
+   "price": 995,
+   "basis": "perBed",
+   "pricePlus": false,
+   "utilities": "included",
+   "flags": [
+    "new build"
+   ],
+   "beds": 6,
+   "utilNote": "utilities included",
+   "availFrom": "2027-05-01",
+   "tenantType": "unknown",
+   "notes": "Newly built property with modern finishes and lower rent.",
+   "laundry": "yes",
+   "furnished": "common",
+   "privateBath": false,
+   "transit": true,
+   "detail": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 995
+    }
+   ],
+   "priceDrop": false
+  },
+  {
+   "id": "westerno_64160",
+   "address": "297 Neville Drive",
+   "source": "Western Off-Campus Housing",
+   "srcId": "64160",
+   "url": "https://offcampus.uwo.ca/Listings/Details/64160",
+   "area": "Near West",
+   "type": "house",
+   "price": 850,
+   "basis": "perBed",
+   "pricePlus": true,
+   "utilities": "extra",
+   "flags": [
+    "renovated"
+   ],
+   "beds": 6,
+   "utilNote": "plus utilities",
+   "availFrom": "2027-05-01",
+   "tenantType": "Student",
+   "notes": "Six bedroom house located behind Ontario Hall with a new kitchen and rec room.",
+   "privateBath": false,
+   "detail": true,
+   "leaseMonths": 12,
+   "parking": 3,
+   "distKm": 1.8,
+   "laundry": "yes",
+   "ac": true,
+   "smoking": false,
+   "transit": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "isNew": true,
+   "status": "active",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 850
+    }
+   ],
+   "priceDrop": false
   }
  ]
 }
