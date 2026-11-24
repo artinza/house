@@ -127,21 +127,16 @@ def pick_model():
         j = requests.get(url, headers=key, timeout=30).json()
         names += [m["name"].split("/")[-1] for m in j.get("models", []) if "generateContent" in m.get("supportedGenerationMethods", [])]
         url = ("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&pageToken=" + j["nextPageToken"]) if j.get("nextPageToken") else None
-    want = CFG.get("model")
-    if want in names:
-        _model = want
-        _cands = [want]
-    else:
+    prefer = CFG.get("models") or []
+    pool = [m for m in prefer if m in names]
+    if not pool:  # none of the preferred names exist, take any plain flash model, newest first
         def ver(n):
-            m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-flash", n)
-            return float(m.group(1)) if m else -1
-        flash = sorted((n for n in names if ver(n) > 0), key=ver, reverse=True)
-        lite = sorted((n for n in names if re.fullmatch(r"gemini-[\d.]+-flash-lite", n)), reverse=True)
-        pool = flash or lite
-        if not pool:
-            raise RuntimeError("No usable Gemini model for this key. Models seen: " + ", ".join(names[:15]))
-        _model = pool[0]
-        _cands = pool[1:4] + [n for n in lite if n not in pool][:2]
+            m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-flash(-lite)?", n)
+            return float(m.group(1)) - (0.001 if m and m.group(2) else 0) if m else -1
+        pool = sorted((n for n in names if ver(n) > 0), key=ver, reverse=True)
+    if not pool:
+        raise RuntimeError("No usable Gemini model for this key. Models seen: " + ", ".join(names[:15]))
+    _model, _cands = pool[0], pool[1:]
     print("Using Gemini model:", _model, "| available:", ", ".join(names[:40]))
     return _model
 
@@ -153,18 +148,19 @@ def _post_gemini(prompt):
                                  "maxOutputTokens": 30000, "temperature": 0}}
     global _model
     last = ""
-    for attempt in range(5):
+    for attempt in range(8):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{pick_model()}:generateContent"
         r = requests.post(url, json=body, headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]}, timeout=180)
         last = f"{r.status_code} {r.text[:400]}"
         if r.status_code >= 400:
             print("  Gemini error:", last.replace("\n", " ")[:600], "| model:", _model, "| fallbacks:", _cands)
-        if r.status_code in (404, 403) or (r.status_code == 429 and re.search(r"limit:\s*0", r.text)):
-            if _cands:  # this model is not usable on the free tier, move to the next one
+        perday = r.status_code == 429 and (("PerDay" in r.text) or ("per day" in r.text.lower()) or re.search(r"limit:\s*\d+,\s*model", r.text) and "PerMinute" not in r.text)
+        if r.status_code in (404, 403) or perday or (r.status_code == 429 and re.search(r"limit:\s*0", r.text)):
+            if _cands:  # this model is out of free quota or unusable, each model has its own quota so try the next one
                 print(f"  model {_model} unusable ({r.status_code}), switching to {_cands[0]}")
                 _model = _cands.pop(0); continue
         if r.status_code == 429:
-            if "PerDay" in r.text or "per day" in r.text.lower():
+            if perday:
                 raise BudgetExceeded("daily free quota used up: " + r.text[:200].replace("\n", " "))
             time.sleep(25 * (attempt + 1)); continue
         if r.status_code >= 500:

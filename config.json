@@ -1,6 +1,5 @@
 {
   "provider": "gemini",
-  "model": "auto",
   "maxRequestsPerRun": 60,
   "llmDelaySeconds": 7,
   "maxListingsPerRun": 400,
@@ -58,5 +57,13 @@
       "note": "Student board. Price is usually per bedroom."
     }
   ],
-  "extraUrls": []
+  "extraUrls": [],
+  "models": [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.8-flash"
+  ]
 }
