@@ -1,0 +1,62 @@
+{
+  "provider": "gemini",
+  "model": "gemini-2.5-flash",
+  "maxRequestsPerRun": 60,
+  "llmDelaySeconds": 7,
+  "maxListingsPerRun": 400,
+  "maxDetailFetchesPerRun": 15,
+  "maxCharsPerPage": 60000,
+  "delaySeconds": 2.5,
+  "goneAfterMissedRuns": 3,
+  "sources": [
+    {
+      "name": "Zumper",
+      "kind": "apartments",
+      "urls": [
+        "https://www.zumper.com/apartments-for-rent/london-on/2-bedrooms"
+      ],
+      "note": "2 bedroom apartments in London."
+    },
+    {
+      "name": "Liv.rent",
+      "kind": "apartments",
+      "urls": [
+        "https://www.liv.rent/rental-listings/western-university"
+      ],
+      "note": "Near Western."
+    },
+    {
+      "name": "Kijiji",
+      "kind": "apartments",
+      "urls": [
+        "https://www.kijiji.ca/b-apartments-condos/london/2+bedrooms/c37l1700214a27949001"
+      ],
+      "note": "2 bedrooms in London."
+    },
+    {
+      "name": "Apartments.uwo.ca",
+      "kind": "apartments",
+      "urls": [
+        "https://apartments.uwo.ca/"
+      ],
+      "note": "Western owned apartments."
+    },
+    {
+      "name": "Rentals.ca",
+      "kind": "apartments",
+      "urls": [
+        "https://rentals.ca/london/2-bedroom-apartments"
+      ],
+      "note": "May block automated fetches."
+    },
+    {
+      "name": "Western Off-Campus Housing",
+      "kind": "board",
+      "paged": "https://offcampus.uwo.ca/Listings?page={n}",
+      "maxPages": 25,
+      "detail": "https://offcampus.uwo.ca/Listings/Details/{srcId}",
+      "note": "Student board. Price is usually per bedroom."
+    }
+  ],
+  "extraUrls": []
+}

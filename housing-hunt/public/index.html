@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Western Housing Hunt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="backend.js"></script>
+<style>
+/* Layout idea: left rail of priorities and filters, right side of grouped listing cards, each card readable in two seconds. */
+:root{
+  --bg:#f3f4f8; --panel:#ffffff; --ink:#1b1d2a; --mute:#646a80; --line:#e2e4ee;
+  --accent:#4f2683; --accent-ink:#ffffff; --accent-soft:#ece6f6;
+  --good:#12805c; --good-soft:#dff3ea; --warn:#a15c00; --warn-soft:#fdeed2; --bad:#b3261e; --bad-soft:#fbe1de;
+  --shadow:0 1px 2px rgba(27,29,42,.06),0 4px 14px rgba(27,29,42,.05);
+  --display:"Bricolage Grotesque","Figtree",system-ui,sans-serif; --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13141c; --panel:#1c1e29; --ink:#eceef6; --mute:#9aa0b8; --line:#2c2f3f;
+    --accent:#b79af0; --accent-ink:#1b1230; --accent-soft:#2c2347;
+    --good:#4cc79a; --good-soft:#143629; --warn:#f0b45a; --warn-soft:#3a2b10; --bad:#ff8a80; --bad-soft:#40201d;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13141c; --panel:#1c1e29; --ink:#eceef6; --mute:#9aa0b8; --line:#2c2f3f;
+  --accent:#b79af0; --accent-ink:#1b1230; --accent-soft:#2c2347;
+  --good:#4cc79a; --good-soft:#143629; --warn:#f0b45a; --warn-soft:#3a2b10; --bad:#ff8a80; --bad-soft:#40201d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.4}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em}
+.stat{color:var(--mute);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.stat b{color:var(--ink)}
+.spacer{flex:1}
+.people{display:flex;gap:6px;align-items:center}
+.tabs{display:flex;gap:4px;background:var(--bg);padding:3px;border-radius:10px}
+.tabs button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-weight:600;color:var(--mute)}
+.tabs button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.shell{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;padding:16px;max-width:1700px;margin:0 auto}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;align-self:start;position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto}
+aside h3{font-family:var(--display);font-size:15px;margin:16px 0 8px;letter-spacing:.01em}
+aside h3:first-child{margin-top:0}
+.row{display:flex;gap:8px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.lbl{font-size:12.5px;color:var(--mute)}
+.slider{display:grid;grid-template-columns:1fr 34px;gap:2px 8px;align-items:center;margin:6px 0}
+.slider .name{grid-column:1/-1;display:flex;justify-content:space-between;font-size:13px}
+.slider .name small{color:var(--mute)}
+.slider input[type=range]{width:100%;accent-color:var(--accent)}
+.slider .val{font-variant-numeric:tabular-nums;text-align:right;font-weight:700;font-size:13px}
+.slider .val.neg{color:var(--bad)} .slider .val.zero{color:var(--mute)}
+.field{display:grid;gap:3px;margin:6px 0}
+.field input,.field select{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:3px 9px;font-size:12.5px;white-space:nowrap}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+button.chip{cursor:pointer}
+.chip.good{background:var(--good-soft);color:var(--good);border-color:transparent;font-weight:600}
+.chip.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent;font-weight:600}
+.chip.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent;font-weight:600}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 11px;font-weight:600}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.small{padding:3px 8px;font-size:12.5px}
+.btn:disabled{opacity:.5;cursor:default}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px}
+.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 8px}
+.toolbar .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.toolbar .seg button{border:0;background:var(--panel);padding:6px 10px;font-weight:600;color:var(--mute)}
+.toolbar .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.group{margin:0 0 22px}
+.group>h2{font-family:var(--display);font-size:17px;margin:0 0 10px;display:flex;align-items:baseline;gap:10px}
+.group>h2 small{font-family:var(--body);font-weight:500;color:var(--mute);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px;position:relative;min-width:0}
+.card.passed{opacity:.55}
+.card .head{display:flex;gap:10px;align-items:flex-start}
+.ring{--p:0;flex:none;width:46px;height:46px;border-radius:50%;background:conic-gradient(var(--rc,var(--accent)) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center}
+.ring span{width:36px;height:36px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.ring.est{opacity:.75}
+.addr{font-weight:700;font-size:15px;line-height:1.2;overflow-wrap:anywhere;cursor:pointer;background:none;border:0;padding:0;text-align:left}
+.addr:hover{color:var(--accent)}
+.sub{color:var(--mute);font-size:12.5px;display:flex;flex-wrap:wrap;gap:2px 8px;margin-top:2px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price .big{font-family:var(--display);font-size:28px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.price .per{color:var(--mute);font-size:13px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.fact{background:var(--bg);border-radius:9px;padding:6px 8px;min-width:0}
+.fact b{display:block;font-size:14px;font-variant-numeric:tabular-nums}
+.fact span{font-size:11.5px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.meters{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;font-size:12px;color:var(--mute);align-items:center}
+.dots{display:flex;gap:3px}
+.dots i{width:14px;height:6px;border-radius:3px;background:var(--line)}
+.dots i.on{background:var(--accent)}
+.foot{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
+.vote{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:3px 8px;font-size:12.5px;font-weight:600;color:var(--mute)}
+.vote[aria-pressed="true"].v2{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.vote[aria-pressed="true"].v1{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.vote[aria-pressed="true"].v0{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.vote[aria-pressed="true"].vm1{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.av{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--bg);color:var(--mute)}
+.av.v2{border-color:var(--good);color:var(--good)} .av.v1{border-color:var(--accent);color:var(--accent)}
+.av.v0{border-color:var(--warn);color:var(--warn)} .av.vm1{border-color:var(--bad);color:var(--bad)}
+.tag-new{position:absolute;top:-7px;right:12px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.tbl{overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--mute);font-weight:600;position:sticky;top:0;background:var(--panel)}
+td.num{font-variant-numeric:tabular-nums}
+tr.clickable{cursor:pointer} tr.clickable:hover td{background:var(--bg)}
+.empty{padding:40px 16px;text-align:center;color:var(--mute);background:var(--panel);border:1px dashed var(--line);border-radius:14px}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(560px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:-8px 0 30px rgba(0,0,0,.2);z-index:40;transform:translateX(102%);transition:transform .2s;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+@media (prefers-reduced-motion: reduce){.drawer{transition:none}}
+.drawer .dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.drawer .db{padding:14px 16px;overflow:auto;flex:1;display:grid;gap:14px;align-content:start}
+.drawer h4{margin:0 0 6px;font-family:var(--display);font-size:14px}
+.bars{display:grid;gap:5px}
+.bar{display:grid;grid-template-columns:130px 1fr 38px;gap:8px;align-items:center;font-size:12.5px}
+.bar .t{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar .t i{display:block;height:100%;background:var(--accent)}
+.bar.unk .t i{background:transparent}
+.bar .w{color:var(--mute);text-align:right;font-variant-numeric:tabular-nums}
+.cm{background:var(--bg);border-radius:10px;padding:8px 10px;font-size:14px}
+.cm small{color:var(--mute);display:block;font-size:11.5px}
+.cmform{display:flex;gap:6px}
+.cmform input{flex:1;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px}
+.scrim{position:fixed;inset:0;background:rgba(10,10,20,.4);z-index:30;display:none}
+.scrim.on{display:block}
+.modal{position:fixed;left:50%;top:6vh;transform:translateX(-50%);width:min(980px,94vw);max-height:86vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;z-index:50;padding:14px;display:none}
+.modal.on{display:block}
+.note{font-size:12.5px;color:var(--mute)}
+.banner{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:13px}
+.filterbtn{display:none}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;padding:12px}
+  aside{position:static;max-height:none;display:none}
+  aside.show{display:block}
+  .filterbtn{display:inline-flex}
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">Western Housing Hunt</div>
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button id="t-browse" aria-pressed="true" data-tab="browse">Browse</button>
+    <button id="t-picks" aria-pressed="false" data-tab="picks">Our picks</button>
+  </div>
+  <div class="stat" id="stat"></div>
+  <div class="spacer"></div>
+  <div class="people" id="people"></div>
+</header>
+<div class="shell">
+  <aside id="side" aria-label="Priorities and filters"></aside>
+  <main>
+    <div id="msg"></div>
+    <div class="toolbar" id="bar"></div>
+    <div id="out"></div>
+  </main>
+</div>
+<div class="scrim" id="scrim"></div>
+<section class="drawer" id="drawer" aria-label="Listing details"></section>
+<section class="modal" id="cmp" aria-label="Compare"></section>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp = (x,a=0,b=1) => Math.max(a, Math.min(b, x));
+const money = n => n == null ? "?" : "$" + Math.round(n).toLocaleString("en-CA");
+const safeUrl = u => typeof u === "string" && u.startsWith("https://") ? u : "";
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const fmtDate = s => { if(!s) return "?"; const [y,m,d] = s.split("-").map(Number); return MON[m-1] + " " + d + " '" + String(y).slice(2); };
+const daysBetween = (a,b) => Math.abs((new Date(a) - new Date(b)) / 864e5);
+
+/* ---------- model ---------- */
+const TYPES = {
+  house:["Whole house","House"], "house-share":["House share","Room in a house"], apt:["Apartment","Apartment"],
+  "apt-share":["Apartment share","Room in an apartment"], bachelor:["Bachelor / studio","Studio"], room:["Rooms","Room"], other:["Sublets and other","Other"]
+};
+const TYPE_ORDER = ["apt","apt-share","bachelor","house-share","house","room","other","unknown"];
+const typeName = t => t && TYPES[t] ? TYPES[t][0] : "Details not checked yet";
+const STATUSES = [["new","Not reviewed"],["interested","Interested"],["tour","Tour booked"],["applied","Applied"],["signed","Signed"],["passed","Passed"]];
+const statusName = s => (STATUSES.find(x => x[0] === (s||"new")) || STATUSES[0])[1];
+const CRIT = [
+  ["price","Price per person","Cost after estimated utilities vs your budget"],
+  ["commute","Distance to campus","Straight from the Western housing board's km figure"],
+  ["groceries","Grocery shopping","Area guess unless the listing says otherwise"],
+  ["nightlife","Nightlife nearby","Positive wants it close, negative wants quiet"],
+  ["utilities","Utilities included","Heat, hydro and water in the rent"],
+  ["warmth","Warmth and insulation","Guess from building type, renovation and heat included"],
+  ["space","Bathrooms per person","More bathrooms per head scores higher"],
+  ["laundry","In-unit laundry","Laundry on site"],
+  ["parking","Parking","Any parking spot"],
+  ["furnished","Furnished","Fully furnished beats common areas only"],
+  ["ac","Air conditioning","A/C listed"],
+  ["modern","Modern building","Newer build year, new construction or recent renovation"],
+  ["movein","Move-in date fit","Closeness to your target move-in"],
+  ["groupfit","Right number of bedrooms","Bedrooms vs your group size"]
+];
+const AREAS0 = {
+  "Old North":{night:6,grocery:6}, "Near South":{night:7,grocery:6}, "Near West":{night:3,grocery:6}, "Masonville":{night:2,grocery:9},
+  "Downtown":{night:9,grocery:4}, "Whitehills":{night:1,grocery:7}, "S. W. London":{night:2,grocery:6}, "Kipps Lane":{night:3,grocery:5}, "West London":{night:3,grocery:7}, "North London":{night:3,grocery:6}
+};
+const AREA_DEFAULT = {night:4,grocery:5};
+const PRESETS = {
+  "Balanced":{price:5,commute:4,groceries:3,nightlife:2,utilities:3,warmth:3,space:2,laundry:3,parking:0,furnished:1,ac:2,modern:4,movein:3,groupfit:2},
+  "Cheapest":{price:5,commute:2,groceries:2,nightlife:0,utilities:4,warmth:2,space:1,laundry:1,parking:0,furnished:0,ac:0,modern:1,movein:2,groupfit:2},
+  "Closest to campus":{price:3,commute:5,groceries:2,nightlife:0,utilities:3,warmth:2,space:1,laundry:2,parking:0,furnished:1,ac:1,modern:2,movein:3,groupfit:2},
+  "Social":{price:3,commute:3,groceries:2,nightlife:5,utilities:3,warmth:2,space:2,laundry:2,parking:0,furnished:1,ac:1,modern:3,movein:3,groupfit:3},
+  "Quiet":{price:4,commute:4,groceries:3,nightlife:-4,utilities:3,warmth:4,space:3,laundry:2,parking:1,furnished:1,ac:1,modern:3,movein:3,groupfit:2}
+};
+const DEF = () => ({
+  weights:{...PRESETS.Balanced}, custom:{}, target:1000, max:1400, utilEst:90, maxKm:6, group:2, move:"2027-09-01", areas:{},
+  f:{types:[], areas:[], minBeds:0, maxBeds:0, util:false, laundry:false, parking:false, furnished:false, ac:false, hidePassed:true, q:"", maxKm:0},
+  groupBy:"type", sort:"score", view:"cards"
+});
+
+const S = { listings:[], meta:{}, votes:[], comments:[], prefsAll:{}, criteria:[], status:null, names:{}, loaded:{}, tab:"browse", open:null, cmp:new Set(), me:null, canWrite:true };
+let P = DEF();
+let db = null, userCap = null;
+
+function mergePrefs(saved){
+  const d = DEF();
+  if(!saved) return d;
+  return {...d, ...saved, weights:{...d.weights, ...(saved.weights||{})}, custom:{...(saved.custom||{})}, areas:{...(saved.areas||{})}, f:{...d.f, ...(saved.f||{})}};
+}
+const areaProfile = (p, a) => ({...(AREAS0[a]||AREA_DEFAULT), ...((p.areas||{})[a]||{})});
+
+/* ---------- scoring ---------- */
+function perPerson(l){
+  if(l.price == null) return {pp:null, guess:false};
+  const beds = l.beds || 0;
+  let basis = l.basis;
+  let guess = false;
+  if(basis === "unknown" || !basis){ guess = true; basis = (beds >= 2 && l.price > 1400) ? "total" : "perBed"; }
+  if(guess && !beds) return {pp:null, guess:true};
+  if(basis === "perBed") return {pp:l.price, guess};
+  if(beds > 0) return {pp:l.price / beds, guess};
+  return {pp:null, guess:true};
+}
+function calc(l, p){
+  const {pp, guess} = perPerson(l);
+  const util = l.utilities;
+  const add = util === "extra" ? p.utilEst : util === "partial" ? p.utilEst/2 : util == null ? p.utilEst/2 : 0;
+  const eff = pp == null ? null : pp + add;
+  const walk = l.distKm == null ? null : l.distKm * 14.4;
+  const bike = l.distKm == null ? null : l.distKm * 4.8;
+  const ap = areaProfile(p, l.area);
+  const parts = {};
+  parts.price = eff == null ? null : eff <= p.target ? 1 : clamp(1 - (eff - p.target) / Math.max(1, p.max - p.target));
+  parts.commute = l.distKm == null ? null : clamp(1 - (l.distKm - 0.5) / Math.max(0.5, p.maxKm - 0.5));
+  parts.groceries = l.groceryMin != null ? clamp(1 - (l.groceryMin - 3) / 17) : ap.grocery / 10;
+  parts.nightlife = ap.night / 10;
+  parts.utilities = util == null ? null : util === "included" ? 1 : util === "partial" ? .5 : 0;
+  const t = l.type;
+  if(t == null && !l.detail) parts.warmth = null;
+  else { let w = {apt:.9,bachelor:.9,"apt-share":.8,"house-share":.5,house:.4,room:.5,other:.5}[t] ?? .5;
+    if((l.flags||[]).includes("renovated")) w += .2;
+    if(util === "included" || util === "partial") w += .1;
+    parts.warmth = clamp(w); }
+  parts.space = (l.baths != null && l.beds) ? clamp((l.baths / l.beds) / .5) : (l.privateBath ? 1 : null);
+  parts.laundry = l.laundry == null ? null : l.laundry === "yes" ? 1 : l.laundry === "shared" ? .6 : 0;
+  parts.parking = l.parking == null ? null : l.parking > 0 ? 1 : 0;
+  parts.furnished = l.furnished == null ? null : l.furnished === "full" ? 1 : l.furnished === "common" ? .6 : 0;
+  parts.ac = l.ac == null ? null : l.ac ? 1 : 0;
+  { const fl = l.flags || []; let m = null;
+    if(l.builtYear) m = l.builtYear >= 2015 ? 1 : l.builtYear >= 2005 ? .75 : l.builtYear >= 1995 ? .5 : .3;
+    if(fl.includes("new build")) m = 1;
+    if(fl.includes("renovated")) m = m == null ? .65 : clamp(m + .2);
+    parts.modern = m; }
+  parts.movein = l.availFrom ? clamp(1 - (daysBetween(l.availFrom, p.move) - 31) / 120) : null;
+  parts.groupfit = !l.beds ? null : l.beds < p.group ? 0 : clamp(1 - .15 * (l.beds - p.group));
+  const tags = (S.meta[l.id] || {}).tags || {};
+  S.criteria.forEach(c => { const v = tags[c.id]; parts["c:"+c.id] = v === true ? 1 : v === false ? 0 : null; });
+  let num = 0, den = 0, known = 0, total = 0;
+  const wts = {...p.weights};
+  S.criteria.forEach(c => wts["c:"+c.id] = (p.custom||{})[c.id] ?? 0);
+  Object.keys(wts).forEach(k => {
+    const w = wts[k]; if(!w) return; total++;
+    const s = parts[k]; if(s == null) return;
+    known++; den += Math.abs(w); num += w > 0 ? w * s : -w * (1 - s);
+  });
+  const score = den ? Math.round(100 * num / den) : null;
+  return {pp, guess, eff, walk, bike, parts, wts, score, confidence: total ? known / total : 1};
+}
+
+/* ---------- storage plumbing ---------- */
+const chains = {};
+function queue(path, fn){
+  const prev = chains[path] || Promise.resolve();
+  const next = prev.then(fn).catch(e => { console.warn("write failed", path, e && e.code); toast("Could not save. Check the Supabase settings in config.js."); });
+  chains[path] = next; return next;
+}
+let toastT;
+function toast(t){ const m = $("#msg"); m.innerHTML = '<div class="banner" role="status">' + esc(t) + "</div>"; clearTimeout(toastT); toastT = setTimeout(() => { m.innerHTML = ""; }, 5000); }
+let saveT;
+function savePrefs(){
+  clearTimeout(saveT);
+  saveT = setTimeout(() => { if(!db || !S.me) return;
+    const snap = JSON.parse(JSON.stringify(P));
+    queue("prefs", () => db.doc("prefs/" + S.me).set(snap)); }, 700);
+}
+async function setVote(lid, v){
+  if(!db || !S.me) return;
+  const cur = S.votes.find(x => x.lid === lid && x.uid === S.me);
+  const ref = db.doc("votes/" + lid + "__" + S.me);
+  if(cur && cur.v === v) await queue("v" + lid, () => ref.delete());
+  else await queue("v" + lid, () => ref.set({lid, uid:S.me, v, ts:Date.now()}));
+}
+async function setStatus(lid, status){
+  if(!db) return;
+  const ref = db.doc("meta/" + lid);
+  await queue("m" + lid, async () => { if(S.meta[lid]) await ref.update({status}); else await ref.set({status, tags:{}}); });
+}
+async function setTag(lid, cid, state){
+  if(!db) return;
+  const ref = db.doc("meta/" + lid);
+  const val = state == null ? {__delete__:true} : state;
+  await queue("m" + lid, async () => { if(S.meta[lid]) await ref.update({tags:{[cid]:val}}); else await ref.set({status:"new", tags: state == null ? {} : {[cid]:state}}); });
+}
+async function addComment(lid, text){
+  if(!db || !S.me || !text.trim()) return;
+  await queue("c", () => db.collection("comments").add({lid, uid:S.me, text:text.trim().slice(0,600), ts:Date.now()}));
+}
+async function saveCriteria(items){
+  if(!db) return;
+  await queue("crit", () => db.doc("shared/criteria").set({items}));
+}
+
+/* ---------- derived ---------- */
+const nameOf = uid => uid === S.me ? "You" : (S.names[uid] || "Friend");
+const initial = uid => (uid === S.me ? (S.names[uid] || "Y") : (S.names[uid] || "F")).trim().charAt(0).toUpperCase();
+function knownUsers(){
+  const set = new Set(Object.keys(S.prefsAll));
+  S.votes.forEach(v => set.add(v.uid)); S.comments.forEach(c => set.add(c.uid));
+  if(S.me) set.add(S.me);
+  return [...set];
+}
+const votesFor = lid => S.votes.filter(v => v.lid === lid);
+function enriched(){
+  return S.listings.filter(l => l.status !== "gone").map(l => {
+    const c = calc(l, P);
+    const vs = votesFor(l.id);
+    const vsum = vs.reduce((a,v) => a + v.v, 0);
+    const others = {};
+    Object.keys(S.prefsAll).forEach(uid => { if(uid !== S.me) others[uid] = calc(l, mergePrefs(S.prefsAll[uid])).score; });
+    return {l, c, vs, vsum, others, st:(S.meta[l.id]||{}).status || "new", ncm:S.comments.filter(x => x.lid === l.id).length};
+  });
+}
+function passFilters(e){
+  const f = P.f, l = e.l;
+  if(f.hidePassed && e.st === "passed") return false;
+  if(f.types.length && !f.types.includes(l.type || "unknown")) return false;
+  if(f.areas.length && !f.areas.includes(l.area)) return false;
+  if(f.minBeds && (l.beds || 0) < f.minBeds) return false;
+  if(f.maxBeds && (l.beds || 0) > f.maxBeds) return false;
+  if(f.util && l.utilities !== "included") return false;
+  if(f.laundry && l.laundry !== "yes") return false;
+  if(f.parking && !(l.parking > 0)) return false;
+  if(f.furnished && !l.furnished) return false;
+  if(f.ac && !l.ac) return false;
+  if(f.maxKm && l.distKm != null && l.distKm > f.maxKm) return false;
+  if(f.q){ const q = f.q.toLowerCase(); if(!((l.address||"") + " " + (l.area||"") + " " + (l.notes||"")).toLowerCase().includes(q)) return false; }
+  return true;
+}
+const sorters = {
+  score:(a,b) => (b.c.score ?? -1) - (a.c.score ?? -1),
+  price:(a,b) => (a.c.eff ?? 1e9) - (b.c.eff ?? 1e9),
+  distance:(a,b) => (a.l.distKm ?? 1e9) - (b.l.distKm ?? 1e9),
+  newest:(a,b) => String(b.l.firstSeen||"").localeCompare(String(a.l.firstSeen||"")),
+  votes:(a,b) => b.vsum - a.vsum || (b.c.score ?? -1) - (a.c.score ?? -1)
+};
+function groupKey(e){
+  switch(P.groupBy){
+    case "type": return e.l.type || "unknown";
+    case "area": return e.l.area || "Unknown area";
+    case "status": return e.st;
+    case "price": { const x = e.c.eff; return x == null ? "Price unclear" : x < 800 ? "Under $800" : x < 1000 ? "$800 to $999" : x < 1200 ? "$1,000 to $1,199" : "$1,200 and up"; }
+    default: return "All listings";
+  }
+}
+function groupLabel(k){
+  if(P.groupBy === "type") return typeName(k === "unknown" ? null : k);
+  if(P.groupBy === "status") return statusName(k);
+  return k;
+}
+function groupOrder(keys){
+  if(P.groupBy === "type") return keys.sort((a,b) => TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b));
+  if(P.groupBy === "status") return keys.sort((a,b) => STATUSES.findIndex(s => s[0]===a) - STATUSES.findIndex(s => s[0]===b));
+  if(P.groupBy === "price") { const o = ["Under $800","$800 to $999","$1,000 to $1,199","$1,200 and up","Price unclear"]; return keys.sort((a,b) => o.indexOf(a) - o.indexOf(b)); }
+  return keys.sort();
+}
+
+/* ---------- render pieces ---------- */
+const shortSrc = s => !s ? "" : /western off/i.test(s) ? "Western board" : /apartments\.uwo|western apart/i.test(s) ? "Western Apartments" : s;
+function ringHtml(c){
+  const s = c.score;
+  const col = s == null ? "var(--mute)" : s >= 75 ? "var(--good)" : s >= 55 ? "var(--accent)" : "var(--warn)";
+  return '<div class="ring' + (c.confidence < .6 ? " est" : "") + '" style="--p:' + (s ?? 0) + ";--rc:" + col + '" title="Match score. Dimmed means many of your priorities have no data yet."><span>' + (s ?? "?") + "</span></div>";
+}
+function dots(n){ const k = Math.round(n / 2); let h = ""; for(let i=0;i<5;i++) h += '<i class="' + (i < k ? "on" : "") + '"></i>'; return '<span class="dots">' + h + "</span>"; }
+function voteAvatars(vs){
+  const users = knownUsers();
+  return users.map(uid => { const v = vs.find(x => x.uid === uid); const cls = v ? (v.v < 0 ? "vm1" : "v" + v.v) : "";
+    return '<span class="av ' + cls + '" title="' + esc(nameOf(uid)) + (v ? ": " + ["No","Meh","Like","Love"][v.v+1] : ": no vote yet") + '">' + esc(initial(uid)) + "</span>"; }).join("");
+}
+function flagsHtml(l, c){
+  const out = [];
+  if(c.guess) out.push('<span class="chip warn" title="The listing does not say whether the price is per room or for the whole place. Guessed from bedrooms and price.">price basis guessed</span>');
+  if(!l.detail) out.push('<span class="chip warn" title="Only the summary row has been read so far. The next daily refresh fills in the rest.">details pending</span>');
+  if(l.deal) out.push('<span class="chip good">' + esc(l.deal) + "</span>");
+  (l.flags||[]).filter(f => !["renovated","new build"].includes(f)).forEach(f => out.push('<span class="chip warn">' + esc(f) + "</span>"));
+  if(l.priceDrop) out.push('<span class="chip good">price dropped</span>');
+  return out.join("");
+}
+function cardHtml(e){
+  const {l, c} = e;
+  const ap = areaProfile(P, l.area);
+  const priceTxt = c.pp != null ? money(c.pp) : (l.price != null ? money(l.price) : "?");
+  const per = c.pp != null ? "per person / mo" : "total / mo, bedrooms unclear";
+  const utilChip = l.utilities === "included" ? '<span class="chip good">All utilities in</span>' : l.utilities === "partial" ? '<span class="chip warn">' + esc(l.utilNote || "Some utilities in") + "</span>" : l.utilities === "extra" ? '<span class="chip bad">Utilities extra ~' + money(P.utilEst) + "</span>" : '<span class="chip">Utilities unknown</span>';
+  const extra = [];
+  if(l.laundry === "yes") extra.push("Laundry"); else if(l.laundry === "shared") extra.push("Shared laundry");
+  if(l.parking > 0) extra.push("Parking " + l.parking);
+  if(l.ac) extra.push("A/C");
+  if(l.furnished === "full") extra.push("Furnished"); else if(l.furnished === "common") extra.push("Common areas furnished");
+  if(l.privateBath) extra.push("Private bath");
+  if(l.transit) extra.push("Bus");
+  if(l.builtYear) extra.unshift("Built " + l.builtYear); else if((l.flags||[]).includes("new build")) extra.unshift("New build");
+  const mine = e.vs.find(v => v.uid === S.me);
+  const vb = [[2,"Love","v2"],[1,"Like","v1"],[0,"Meh","v0"],[-1,"No","vm1"]].map(([v,t,cls]) => '<button class="vote ' + cls + '" data-act="vote" data-id="' + esc(l.id) + '" data-v="' + v + '" aria-pressed="' + (mine && mine.v === v) + '">' + t + "</button>").join("");
+  return '<article class="card' + (e.st === "passed" ? " passed" : "") + '">' + (l.isNew ? '<span class="tag-new">NEW</span>' : "") +
+    '<div class="head">' + ringHtml(c) + '<div style="min-width:0;flex:1"><button class="addr" data-act="open" data-id="' + esc(l.id) + '">' + esc(l.address) + "</button>" +
+    '<div class="sub"><span>' + esc(l.area || "Area unknown") + "</span><span>" + esc(typeName(l.type)) + "</span><span>" + esc(shortSrc(l.source)) + "</span></div></div>" +
+    '<label class="chip" title="Add to compare"><input type="checkbox" data-act="cmp" data-id="' + esc(l.id) + '"' + (S.cmp.has(l.id) ? " checked" : "") + ' aria-label="Compare ' + esc(l.address) + '"></label></div>' +
+    '<div class="price"><span class="big">' + priceTxt + '</span><span class="per">' + per + "</span></div>" +
+    '<div class="facts"><div class="fact"><b>' + (l.beds ?? "?") + (l.baths != null ? " / " + l.baths : "") + "</b><span>" + (l.baths != null ? "beds / baths" : "bedrooms") + "</span></div>" +
+    '<div class="fact"><b>' + (c.walk != null ? Math.round(c.walk) + " min" : "?") + "</b><span>walk" + (c.bike != null ? ", bike " + Math.round(c.bike) : "") + "</span></div>" +
+    '<div class="fact"><b>' + fmtDate(l.availFrom) + "</b><span>" + (l.leaseMonths ? l.leaseMonths + " mo lease" : "move-in") + "</span></div></div>" +
+    '<div class="chips">' + utilChip + extra.map(x => '<span class="chip">' + esc(x) + "</span>").join("") + "</div>" +
+    '<div class="meters"><span>Nightlife</span>' + dots(ap.night) + "<span>Groceries</span>" + dots(l.groceryMin != null ? clamp(1 - (l.groceryMin - 3)/17) * 10 : ap.grocery) + "</div>" +
+    '<div class="chips">' + flagsHtml(l, c) + "</div>" +
+    '<div class="foot"><span class="vcluster">' + voteAvatars(e.vs) + "</span>" + vb +
+    '<span class="spacer"></span><button class="btn small" data-act="open" data-id="' + esc(l.id) + '">' + (e.ncm ? e.ncm + " comment" + (e.ncm > 1 ? "s" : "") : "Discuss") + "</button></div></article>";
+}
+function tableHtml(list){
+  return '<div class="tbl"><table><thead><tr><th>Match</th><th>Address</th><th>Type</th><th>$ / person</th><th>Beds</th><th>Walk</th><th>Utilities</th><th>Move-in</th><th>Status</th><th>Votes</th></tr></thead><tbody>' +
+    list.map(e => '<tr class="clickable" data-act="open" data-id="' + esc(e.l.id) + '"><td class="num"><b>' + (e.c.score ?? "?") + "</b></td><td>" + esc(e.l.address) + " <span class='note'>" + esc(e.l.area || "") + "</span></td><td>" + esc(typeName(e.l.type)) + '</td><td class="num">' + (e.c.pp != null ? money(e.c.pp) : "?") + '</td><td class="num">' + (e.l.beds ?? "?") + '</td><td class="num">' + (e.c.walk != null ? Math.round(e.c.walk) + " min" : "?") + "</td><td>" + esc(e.l.utilities || "?") + "</td><td>" + fmtDate(e.l.availFrom) + "</td><td>" + esc(statusName(e.st)) + "</td><td>" + voteAvatars(e.vs) + "</td></tr>").join("") + "</tbody></table></div>";
+}
+
+/* ---------- main render ---------- */
+function renderTop(){
+  const act = S.listings.filter(l => l.status !== "gone");
+  const st = S.status || {};
+  const nNew = act.filter(l => l.isNew).length;
+  const when = st.lastRun ? new Date(st.lastRun).toLocaleString("en-CA", {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}) : "not yet";
+  $("#stat").innerHTML = "<span><b>" + act.length + "</b> active</span><span><b>" + nNew + "</b> new</span>" + (st.removedCount ? "<span><b>" + st.removedCount + "</b> gone since last run</span>" : "") + "<span>Refreshed " + esc(when) + "</span>";
+  $("#people").innerHTML = knownUsers().map(uid => '<span class="chip" title="' + esc(nameOf(uid)) + '"><span class="av">' + esc(initial(uid)) + "</span>" + esc(nameOf(uid)) + "</span>").join("");
+  $("#t-browse").setAttribute("aria-pressed", S.tab === "browse"); $("#t-picks").setAttribute("aria-pressed", S.tab === "picks");
+}
+function renderBar(){
+  const opt = (v, cur, t) => '<option value="' + v + '"' + (v === cur ? " selected" : "") + ">" + t + "</option>";
+  $("#bar").innerHTML = '<button class="btn filterbtn" data-act="side">Priorities and filters</button>' +
+    (S.tab === "browse" ? '<label class="lbl">Group by <select id="groupBy">' + opt("type", P.groupBy, "Type") + opt("area", P.groupBy, "Area") + opt("price", P.groupBy, "Price band") + opt("status", P.groupBy, "Status") + opt("none", P.groupBy, "No groups") + "</select></label>" +
+    '<label class="lbl">Sort <select id="sortBy">' + opt("score", P.sort, "Best match") + opt("price", P.sort, "Cheapest") + opt("distance", P.sort, "Closest") + opt("newest", P.sort, "Newest") + opt("votes", P.sort, "Most loved") + "</select></label>" +
+    '<span class="seg"><button data-act="view" data-v="cards" aria-pressed="' + (P.view === "cards") + '">Cards</button><button data-act="view" data-v="table" aria-pressed="' + (P.view === "table") + '">Table</button></span>' : "") +
+    '<span class="spacer"></span>' + (S.cmp.size >= 2 ? '<button class="btn primary" data-act="compare">Compare ' + S.cmp.size + "</button>" : "") +
+    (S.cmp.size ? '<button class="btn" data-act="clearcmp">Clear compare</button>' : "");
+}
+function renderMain(){
+  renderTop(); renderBar();
+  const out = $("#out");
+  if(!S.loaded.listings){ out.innerHTML = '<div class="empty">Loading listings…</div>'; return; }
+  const all = enriched();
+  if(!all.length){ out.innerHTML = '<div class="empty">No listings yet. The daily refresh fills this in. Ask Claude to run it now if you want it sooner.</div>'; return; }
+  if(S.tab === "picks") return renderPicks(all);
+  const list = all.filter(passFilters).sort(sorters[P.sort]);
+  if(!list.length){ out.innerHTML = '<div class="empty">Nothing matches these filters. Loosen a filter on the left.</div>'; return; }
+  const note = '<p class="note">' + list.length + " of " + all.length + " listings shown. Match scores use your priorities, so your friend sees different numbers for the same place.</p>";
+  if(P.view === "table"){ out.innerHTML = note + tableHtml(list); return; }
+  const groups = {}; list.forEach(e => (groups[groupKey(e)] = groups[groupKey(e)] || []).push(e));
+  out.innerHTML = note + groupOrder(Object.keys(groups)).map(k => '<section class="group"><h2>' + esc(groupLabel(k)) + " <small>" + groups[k].length + " listing" + (groups[k].length > 1 ? "s" : "") + '</small></h2><div class="cards">' + groups[k].map(cardHtml).join("") + "</div></section>").join("");
+}
+function renderPicks(all){
+  const out = $("#out");
+  const voted = all.filter(e => e.vs.length || ["interested","tour","applied","signed"].includes(e.st));
+  if(!voted.length){ out.innerHTML = '<div class="empty">Nothing here yet. Vote Love, Like, Meh or No on a listing and it shows up here with both of your scores side by side.</div>'; return; }
+  voted.sort((a,b) => b.vsum - a.vsum || (b.c.score ?? -1) - (a.c.score ?? -1));
+  const others = Object.keys(S.prefsAll).filter(u => u !== S.me);
+  const head = "<th>#</th><th>Place</th><th>Votes</th><th>Your match</th>" + others.map(u => "<th>" + esc(nameOf(u)) + " match</th>").join("") + "<th>$ / person</th><th>Walk</th><th>Status</th><th>Comments</th>";
+  const rows = voted.map((e,i) => '<tr class="clickable" data-act="open" data-id="' + esc(e.l.id) + '"><td class="num">' + (i+1) + "</td><td><b>" + esc(e.l.address) + "</b> <span class='note'>" + esc(typeName(e.l.type)) + ", " + esc(e.l.area || "") + "</span></td><td>" + voteAvatars(e.vs) + ' <span class="note">score ' + e.vsum + '</span></td><td class="num"><b>' + (e.c.score ?? "?") + "</b></td>" + others.map(u => '<td class="num"><b>' + (e.others[u] ?? "?") + "</b></td>").join("") + '<td class="num">' + (e.c.pp != null ? money(e.c.pp) : "?") + '</td><td class="num">' + (e.c.walk != null ? Math.round(e.c.walk) + " min" : "?") + "</td><td>" + esc(statusName(e.st)) + '</td><td class="num">' + e.ncm + "</td></tr>").join("");
+  out.innerHTML = '<p class="note">Ranked by combined votes (Love 3, Like 2, Meh 1, No 0 each, minus 1 so No counts against). Ties break on your own match score.</p><div class="tbl"><table><thead><tr>' + head + "</tr></thead><tbody>" + rows + "</tbody></table></div>";
+}
+
+/* ---------- sidebar ---------- */
+function sliderHtml(k, label, hint, w){
+  return '<div class="slider"><div class="name"><span>' + esc(label) + "</span></div><input type=\"range\" min=\"-5\" max=\"5\" step=\"1\" value=\"" + w + "\" data-w=\"" + esc(k) + "\" aria-label=\"" + esc(label) + " importance\" title=\"" + esc(hint) + "\"><span class=\"val " + (w < 0 ? "neg" : w === 0 ? "zero" : "") + '" id="wv-' + esc(k) + '">' + (w > 0 ? "+" : "") + w + "</span></div>";
+}
+function renderSide(){
+  const f = P.f;
+  const areas = [...new Set(S.listings.map(l => l.area).filter(Boolean))].sort();
+  const types = TYPE_ORDER.filter(t => t === "unknown" || S.listings.some(l => (l.type||"unknown") === t) || t in TYPES);
+  const tchip = (t) => '<button class="chip' + (f.types.includes(t) ? " on" : "") + '" data-act="ftype" data-v="' + t + '">' + esc(typeName(t === "unknown" ? null : t)) + "</button>";
+  const achip = a => '<button class="chip' + (f.areas.includes(a) ? " on" : "") + '" data-act="farea" data-v="' + esc(a) + '">' + esc(a) + "</button>";
+  const tog = (k, t) => '<button class="chip' + (f[k] ? " on" : "") + '" data-act="ftog" data-v="' + k + '">' + t + "</button>";
+  $("#side").innerHTML =
+    "<h3>What matters to you</h3><p class='note'>Drag right to want more of it. Drag left to avoid it. Zero ignores it.</p>" +
+    '<div class="row wrap" style="margin-bottom:6px">' + Object.keys(PRESETS).map(n => '<button class="chip" data-act="preset" data-v="' + esc(n) + '">' + esc(n) + "</button>").join("") + "</div>" +
+    CRIT.map(([k,l,h]) => sliderHtml(k, l, h, P.weights[k] ?? 0)).join("") +
+    (S.criteria.length ? "<h3>Your own priorities</h3>" + S.criteria.map(c => sliderHtml("c:" + c.id, c.name, "Tag listings that have it", (P.custom||{})[c.id] ?? 0) + '<button class="btn small" data-act="delcrit" data-id="' + esc(c.id) + '">Remove "' + esc(c.name) + '" for both of us</button>').join("") : "") +
+    "<h3>Add something you care about</h3><div class='row'><input id='newcrit' type='text' maxlength='40' placeholder='Gym nearby, pet friendly, bike storage…' style='flex:1;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px' aria-label='New priority name'><button class='btn primary' data-act='addcrit'>Add</button></div><p class='note'>Then open a listing and mark which ones have it.</p>" +
+    "<h3>Budget and basics</h3><div class='grid2'>" +
+    fld("target","Happy price / person", P.target, "number") + fld("max","Max price / person", P.max, "number") +
+    fld("utilEst","Utilities if extra", P.utilEst, "number") + fld("maxKm","Farthest km you accept", P.maxKm, "number") +
+    fld("group","People in your group", P.group, "number") + fld("move","Target move-in", P.move, "date") + "</div>" +
+    "<h3>Filters</h3><div class='field'><input id='q' type='search' placeholder='Search street or notes' value='" + esc(f.q) + "' aria-label='Search listings'></div>" +
+    "<div class='lbl'>Type</div><div class='chips'>" + TYPE_ORDER.map(tchip).join("") + "</div>" +
+    "<div class='lbl' style='margin-top:8px'>Area</div><div class='chips'>" + areas.map(achip).join("") + "</div>" +
+    "<div class='grid2' style='margin-top:8px'>" + fld("f.minBeds","Min bedrooms", f.minBeds, "number") + fld("f.maxBeds","Max bedrooms (0 = any)", f.maxBeds, "number") + fld("f.maxKm","Max km (0 = any)", f.maxKm, "number") + "</div>" +
+    "<div class='chips' style='margin-top:8px'>" + tog("util","Utilities included") + tog("laundry","Laundry") + tog("parking","Parking") + tog("furnished","Furnished") + tog("ac","A/C") + tog("hidePassed","Hide passed") + "</div>" +
+    '<button class="btn small" style="margin-top:10px" data-act="resetf">Clear filters</button>' +
+    "<h3>Area guesses</h3><p class='note'>My rough starting scores, 0 to 10. Change them to match what you know.</p>" +
+    '<div class="tbl" style="border-radius:8px"><table><thead><tr><th>Area</th><th>Night</th><th>Grocery</th></tr></thead><tbody>' +
+    [...new Set([...Object.keys(AREAS0), ...areas])].sort().map(a => { const p = areaProfile(P, a); return "<tr><td>" + esc(a) + '</td><td><input type="number" min="0" max="10" value="' + p.night + '" data-area="' + esc(a) + '" data-k="night" style="width:48px" aria-label="' + esc(a) + ' nightlife"></td><td><input type="number" min="0" max="10" value="' + p.grocery + '" data-area="' + esc(a) + '" data-k="grocery" style="width:48px" aria-label="' + esc(a) + ' groceries"></td></tr>'; }).join("") + "</tbody></table></div>";
+}
+function fld(key, label, val, type){ return '<label class="field"><span class="lbl">' + esc(label) + '</span><input data-p="' + esc(key) + '" type="' + type + '" value="' + esc(val) + '"></label>'; }
+
+/* ---------- drawer ---------- */
+function renderDrawer(){
+  const dr = $("#drawer");
+  if(!S.open){ dr.classList.remove("open"); $("#scrim").classList.remove("on"); return; }
+  const e = enriched().find(x => x.l.id === S.open);
+  if(!e){ S.open = null; return renderDrawer(); }
+  const {l, c} = e;
+  const keepVal = ($("#cmtext") || {}).value || "";
+  const hadFocus = document.activeElement && document.activeElement.id === "cmtext";
+  const meta = S.meta[l.id] || {tags:{}};
+  const bars = [...CRIT.map(([k,lab]) => [k, lab]), ...S.criteria.map(cr => ["c:"+cr.id, cr.name])].filter(([k]) => c.wts[k]).map(([k,lab]) => {
+    const s = c.parts[k], w = c.wts[k];
+    return '<div class="bar' + (s == null ? " unk" : "") + '"><span>' + esc(lab) + '</span><span class="t"><i style="width:' + (s == null ? 0 : Math.round((w < 0 ? 1 - s : s) * 100)) + '%"></i></span><span class="w">' + (s == null ? "no data" : (w > 0 ? "+" : "") + w) + "</span></div>"; }).join("");
+  const mine = e.vs.find(v => v.uid === S.me);
+  const vb = [[2,"Love","v2"],[1,"Like","v1"],[0,"Meh","v0"],[-1,"No","vm1"]].map(([v,t,cls]) => '<button class="vote ' + cls + '" data-act="vote" data-id="' + esc(l.id) + '" data-v="' + v + '" aria-pressed="' + (mine && mine.v === v) + '">' + t + "</button>").join("");
+  const theirs = e.vs.filter(v => v.uid !== S.me).map(v => '<span class="chip">' + esc(nameOf(v.uid)) + ": " + ["No","Meh","Like","Love"][v.v+1] + "</span>").join("");
+  const tags = S.criteria.map(cr => { const st = (meta.tags||{})[cr.id]; return '<button class="chip' + (st === true ? " good" : st === false ? " bad" : "") + '" data-act="tag" data-id="' + esc(l.id) + '" data-c="' + esc(cr.id) + '">' + esc(cr.name) + ": " + (st === true ? "yes" : st === false ? "no" : "unchecked") + "</button>"; }).join("");
+  const cms = S.comments.filter(x => x.lid === l.id).sort((a,b) => a.ts - b.ts).map(x => '<div class="cm"><small>' + esc(nameOf(x.uid)) + " · " + esc(new Date(x.ts).toLocaleString("en-CA", {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"})) + "</small>" + esc(x.text) + "</div>").join("") || '<p class="note">No comments yet.</p>';
+  const url = safeUrl(l.url);
+  const facts = [["Rent as listed", l.price != null ? money(l.price) + (l.pricePlus ? "+" : "") + (l.basis === "perBed" ? " per bedroom" : l.basis === "total" ? " total" : " (basis not stated)") : "?"],
+    ["Lease", (l.leaseMonths ? l.leaseMonths + " months" : "?") + ", from " + fmtDate(l.availFrom)], ["Distance", l.distKm != null ? l.distKm + " km" : "unknown"],
+    ["Utilities", (l.utilities || "unknown") + (l.utilNote ? " (" + l.utilNote + ")" : "")], ["Tenants", l.tenantType || "?"], ["Smoking", l.smoking === false ? "No" : l.smoking === true ? "Allowed" : "?"],
+    ["Built", l.builtYear || ((l.flags||[]).includes("new build") ? "New construction" : "?")], ["Source", l.source || "?"], ["First seen", l.firstSeen || "?"]].map(([a,b]) => '<div class="fact"><span>' + esc(a) + "</span><b style='font-size:13px;font-weight:600'>" + esc(b) + "</b></div>").join("");
+  const hist = (l.priceHistory||[]).length > 1 ? '<p class="note">Price history: ' + l.priceHistory.map(h => esc(h.d) + " " + money(h.p)).join(" → ") + "</p>" : "";
+  dr.innerHTML = '<div class="dh">' + ringHtml(c) + '<div style="flex:1;min-width:0"><div class="addr" style="cursor:default">' + esc(l.address) + '</div><div class="sub"><span>' + esc(l.area || "") + "</span><span>" + esc(typeName(l.type)) + "</span><span>" + (c.pp != null ? money(c.pp) + " per person" : "price unclear") + '</span></div></div><button class="btn small" data-act="close">Close</button></div>' +
+    '<div class="db">' +
+    '<div><h4>Your vote</h4><div class="row wrap">' + vb + theirs + '</div><div class="row wrap" style="margin-top:8px"><label class="lbl">Status <select data-act="status" data-id="' + esc(l.id) + '" style="border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:5px 8px">' + STATUSES.map(([k,t]) => '<option value="' + k + '"' + (k === e.st ? " selected" : "") + ">" + t + "</option>").join("") + "</select></label>" + (url ? '<a class="btn small" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Open original listing</a>' : "") + "</div></div>" +
+    (l.notes ? "<div><h4>Summary</h4><div>" + esc(l.notes) + "</div></div>" : "") +
+    '<div><h4>Key facts</h4><div class="facts" style="grid-template-columns:repeat(2,1fr)">' + facts + "</div>" + hist + '<div class="chips" style="margin-top:8px">' + flagsHtml(l, c) + "</div></div>" +
+    '<div><h4>Why it scores ' + (c.score ?? "?") + '</h4><div class="bars">' + (bars || '<span class="note">Set some priorities on the left.</span>') + "</div></div>" +
+    (S.criteria.length ? "<div><h4>Your own priorities</h4><div class='chips'>" + tags + "</div><p class='note'>Click to cycle unchecked, yes, no. Both of you see these.</p></div>" : "") +
+    '<div><h4>Discussion</h4><div style="display:grid;gap:6px">' + cms + '</div></div></div>' +
+    '<form class="cmform" id="cmform" style="padding:10px 16px;border-top:1px solid var(--line)"><input id="cmtext" type="text" maxlength="600" placeholder="Say something about this place" aria-label="Comment" value="' + esc(keepVal) + '"><button class="btn primary" type="submit">Post</button></form>';
+  dr.dataset.id = l.id;
+  dr.classList.add("open"); $("#scrim").classList.add("on");
+  if(hadFocus){ const t = $("#cmtext"); t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+}
+function renderCompare(){
+  const m = $("#cmp");
+  const rows = enriched().filter(e => S.cmp.has(e.l.id));
+  if(!$("#cmp").classList.contains("on")) return;
+  const r = (label, fn) => "<tr><th>" + esc(label) + "</th>" + rows.map(e => "<td>" + fn(e) + "</td>").join("") + "</tr>";
+  m.innerHTML = '<div class="row" style="margin-bottom:8px"><b style="font-family:var(--display);font-size:17px">Side by side</b><span class="spacer"></span><button class="btn small" data-act="closecmp">Close</button></div><div class="tbl"><table><tbody>' +
+    r("Place", e => "<b>" + esc(e.l.address) + "</b>") + r("Your match", e => "<b>" + (e.c.score ?? "?") + "</b>") + r("Type", e => esc(typeName(e.l.type))) + r("Area", e => esc(e.l.area || "?")) +
+    r("$ / person", e => e.c.pp != null ? money(e.c.pp) : "?") + r("After utilities", e => e.c.eff != null ? money(e.c.eff) : "?") + r("Utilities", e => esc(e.l.utilities || "?")) +
+    r("Bedrooms / baths", e => (e.l.beds ?? "?") + " / " + (e.l.baths ?? "?")) + r("Walk to campus", e => e.c.walk != null ? Math.round(e.c.walk) + " min" : "?") +
+    r("Move-in", e => fmtDate(e.l.availFrom)) + r("Laundry", e => esc(e.l.laundry || "?")) + r("Parking", e => e.l.parking ?? "?") + r("A/C", e => e.l.ac == null ? "?" : e.l.ac ? "Yes" : "No") +
+    r("Furnished", e => esc(e.l.furnished || "?")) + r("Votes", e => voteAvatars(e.vs)) + "</tbody></table></div>";
+}
+
+/* ---------- events ---------- */
+let rafT = 0;
+function renderAll(){ cancelAnimationFrame(rafT); rafT = requestAnimationFrame(() => { renderMain(); if(S.open) renderDrawer(); renderCompare(); }); }
+document.addEventListener("click", ev => {
+  const t = ev.target.closest("[data-act]"); if(!t || t.tagName === "SELECT" || (t.tagName === "INPUT" && t.type === "checkbox")) return;
+  const a = t.dataset.act, id = t.dataset.id;
+  if(a === "open"){ S.open = id; renderDrawer(); }
+  else if(a === "close"){ S.open = null; renderDrawer(); }
+  else if(a === "vote"){ setVote(id, Number(t.dataset.v)); }
+  else if(a === "view"){ P.view = t.dataset.v; savePrefs(); renderAll(); }
+  else if(a === "side"){ $("#side").classList.toggle("show"); }
+  else if(a === "preset"){ P.weights = {...PRESETS[t.dataset.v]}; savePrefs(); renderSide(); renderAll(); }
+  else if(a === "ftype"){ const v = t.dataset.v, f = P.f; f.types = f.types.includes(v) ? f.types.filter(x => x !== v) : [...f.types, v]; savePrefs(); renderSide(); renderAll(); }
+  else if(a === "farea"){ const v = t.dataset.v, f = P.f; f.areas = f.areas.includes(v) ? f.areas.filter(x => x !== v) : [...f.areas, v]; savePrefs(); renderSide(); renderAll(); }
+  else if(a === "ftog"){ P.f[t.dataset.v] = !P.f[t.dataset.v]; savePrefs(); renderSide(); renderAll(); }
+  else if(a === "resetf"){ const keep = P.f.hidePassed; P.f = {...DEF().f, hidePassed:keep}; savePrefs(); renderSide(); renderAll(); }
+  else if(a === "addcrit"){ const inp = $("#newcrit"), name = inp.value.trim(); if(!name) return;
+    const cid = "x" + Date.now().toString(36); P.custom[cid] = 3; savePrefs();
+    saveCriteria([...S.criteria, {id:cid, name}]); inp.value = ""; }
+  else if(a === "delcrit"){ if(t.dataset.arm === id){ delete P.custom[id]; savePrefs(); saveCriteria(S.criteria.filter(c => c.id !== id)); } else { t.dataset.arm = id; t.textContent = "Click again to confirm removal"; } }
+  else if(a === "tag"){ const cur = ((S.meta[id]||{}).tags||{})[t.dataset.c]; setTag(id, t.dataset.c, cur == null ? true : cur === true ? false : null); }
+  else if(a === "compare"){ $("#cmp").classList.add("on"); $("#scrim").classList.add("on"); renderCompare(); }
+  else if(a === "closecmp"){ $("#cmp").classList.remove("on"); if(!S.open) $("#scrim").classList.remove("on"); }
+  else if(a === "clearcmp"){ S.cmp.clear(); renderAll(); }
+});
+document.addEventListener("change", ev => {
+  const t = ev.target;
+  if(t.dataset.act === "cmp"){ if(t.checked){ if(S.cmp.size >= 4){ t.checked = false; toast("Compare up to 4 places at a time."); return; } S.cmp.add(t.dataset.id); } else S.cmp.delete(t.dataset.id); renderBar(); return; }
+  if(t.dataset.act === "status"){ setStatus(t.dataset.id, t.value); return; }
+  if(t.id === "groupBy"){ P.groupBy = t.value; savePrefs(); renderAll(); return; }
+  if(t.id === "sortBy"){ P.sort = t.value; savePrefs(); renderAll(); return; }
+});
+document.addEventListener("input", ev => {
+  const t = ev.target;
+  if(t.dataset.w){ const k = t.dataset.w, v = Number(t.value);
+    if(k.startsWith("c:")) P.custom[k.slice(2)] = v; else P.weights[k] = v;
+    const out = $("#wv-" + k.replace(":", "\\:")); if(out){ out.textContent = (v > 0 ? "+" : "") + v; out.className = "val " + (v < 0 ? "neg" : v === 0 ? "zero" : ""); }
+    savePrefs(); renderAll(); return; }
+  if(t.dataset.p){ const k = t.dataset.p; let v = t.type === "number" ? Number(t.value) : t.value;
+    if(k.startsWith("f.")) P.f[k.slice(2)] = v; else P[k] = v; savePrefs(); renderAll(); return; }
+  if(t.id === "q"){ P.f.q = t.value; savePrefs(); renderAll(); return; }
+  if(t.dataset.area){ const a = t.dataset.area; P.areas[a] = {...(P.areas[a]||{}), [t.dataset.k]: clamp(Number(t.value), 0, 10)}; savePrefs(); renderAll(); }
+});
+document.addEventListener("submit", ev => {
+  if(ev.target.id === "cmform"){ ev.preventDefault(); const inp = $("#cmtext"); const txt = inp.value; inp.value = ""; addComment(S.open, txt); }
+});
+document.addEventListener("keydown", ev => { if(ev.key === "Escape"){ if($("#cmp").classList.contains("on")){ $("#cmp").classList.remove("on"); } else if(S.open){ S.open = null; renderDrawer(); } if(!S.open && !$("#cmp").classList.contains("on")) $("#scrim").classList.remove("on"); } });
+$("#scrim").addEventListener("click", () => { S.open = null; $("#cmp").classList.remove("on"); renderDrawer(); $("#scrim").classList.remove("on"); });
+document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => { S.tab = b.dataset.tab; renderAll(); }));
+
+/* ---------- boot ---------- */
+async function refreshNames(){
+  if(!userCap || !userCap.profiles) return;
+  try { const ids = knownUsers(); const ps = await userCap.profiles(ids); ids.forEach(id => { S.names[id] = (ps[id] && ps[id].name) || S.names[id] || ""; }); renderAll(); } catch(e){}
+}
+async function boot(){
+  renderSide(); renderMain();
+  const load = setTimeout(() => { if(!S.loaded.listings) $("#out").innerHTML = '<div class="empty">Loading listings. If this stays empty, the first daily refresh has not run yet. Run the Daily listing refresh action once from the GitHub Actions tab.</div>'; }, 10000);
+  try { userCap = await claude.use("user"); } catch(e){ userCap = null; }
+  try { db = await claude.use("db"); } catch(e){ db = null; }
+  if(!db){ clearTimeout(load); $("#out").innerHTML = '<div class="empty">Could not start the data layer.</div>'; return; }
+  try { S.me = userCap ? await userCap.id() : null; } catch(e){ S.me = null; }
+  if(!S.me && userCap && userCap.me){ try { const m = await userCap.me(); S.me = m && m.id || null; } catch(e){} }
+  if(S.me && userCap && userCap.profiles){ try { const ps = await userCap.profiles([S.me]); S.names[S.me] = (ps[S.me] && ps[S.me].name) || ""; } catch(e){} }
+  if(userCap && userCap.can){ try { S.canWrite = (await userCap.can("data.write")) !== false; } catch(e){} }
+  if(!S.me){ toast("Pick a name to save votes and settings."); }
+  const onErr = name => e => { console.warn(name, e); S.loaded[name] = true; renderAll(); };
+  db.collection("listings").onSnapshot(s => { clearTimeout(load); S.loaded.listings = true; S.listings = s.docs.map(d => ({...d.data(), id:d.id})); renderSide(); renderAll(); }, onErr("listings"));
+  db.collection("meta").onSnapshot(s => { S.meta = {}; s.docs.forEach(d => S.meta[d.id] = d.data()); renderAll(); }, onErr("meta"));
+  db.collection("votes").onSnapshot(s => { S.votes = s.docs.map(d => d.data()); refreshNames(); renderAll(); }, onErr("votes"));
+  db.collection("comments").onSnapshot(s => { S.comments = s.docs.map(d => d.data()); refreshNames(); renderAll(); }, onErr("comments"));
+  db.collection("prefs").onSnapshot(s => { S.prefsAll = {}; s.docs.forEach(d => S.prefsAll[d.id] = d.data());
+    if(!S.loaded.prefs && S.me){ S.loaded.prefs = true; P = mergePrefs(S.prefsAll[S.me]); renderSide(); } refreshNames(); renderAll(); }, onErr("prefs"));
+  db.doc("shared/criteria").onSnapshot(s => { S.criteria = s.exists ? (s.data().items || []) : []; renderSide(); renderAll(); }, onErr("criteria"));
+  db.doc("config/status").onSnapshot(s => { S.status = s.exists ? s.data() : null; renderAll(); }, onErr("status"));
+}
+boot();
+</script>
+</body>
+</html>

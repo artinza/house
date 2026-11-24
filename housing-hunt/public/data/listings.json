@@ -1,0 +1,397 @@
+{
+ "listings": [
+  {
+   "id": "seed_939western",
+   "address": "939 Western Rd",
+   "area": "Near West",
+   "type": "apt",
+   "price": 1799,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1799
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true,
+   "distKm": 2.0,
+   "builtYear": 1954,
+   "utilities": "partial",
+   "utilNote": "water and heat in",
+   "deal": "1 month free"
+  },
+  {
+   "id": "seed_talbotterrace",
+   "address": "Talbot Terrace",
+   "area": "Downtown",
+   "type": "apt",
+   "price": 2144,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2144
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "new build"
+   ],
+   "pricePlus": true,
+   "distKm": 3.0,
+   "deal": "$1,400 off or 1 month free",
+   "notes": "Seed data from a manual search on Nov 24. The first daily refresh replaces it with live data."
+  },
+  {
+   "id": "seed_onerichmondrow",
+   "address": "One Richmond Row",
+   "area": "Downtown",
+   "type": "apt",
+   "price": 2235,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2235
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true,
+   "builtYear": 2021,
+   "distKm": 3.9
+  },
+  {
+   "id": "seed_695richmond_1508",
+   "address": "695 Richmond St #1508",
+   "area": "Downtown",
+   "type": "apt",
+   "price": 2190,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2190
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "distKm": 2.4
+  },
+  {
+   "id": "seed_600proudfoot",
+   "address": "600 Proudfoot Ln",
+   "area": "North London",
+   "type": "apt",
+   "price": 2099,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2099
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true,
+   "builtYear": 2005,
+   "distKm": 3.9
+  },
+  {
+   "id": "seed_540proudfoot",
+   "address": "540 Proudfoot Ln",
+   "area": "North London",
+   "type": "apt",
+   "price": 1619,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1619
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "distance estimated"
+   ],
+   "distKm": 3.7
+  },
+  {
+   "id": "seed_560proudfoot_207",
+   "address": "560 Proudfoot Ln #207",
+   "area": "North London",
+   "type": "apt",
+   "price": 1744,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1744
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "renovated"
+   ],
+   "pricePlus": true,
+   "distKm": 3.6
+  },
+  {
+   "id": "seed_capulet3",
+   "address": "Capulet Ln",
+   "area": "North London",
+   "type": "apt",
+   "price": 2095,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2095
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true,
+   "builtYear": 2011,
+   "distKm": 4.3
+  },
+  {
+   "id": "seed_jacksway319",
+   "address": "Jacks Way #319",
+   "area": "Near West",
+   "type": "apt",
+   "price": 2200,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 2200
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "new build",
+    "dates unclear"
+   ],
+   "utilities": "included",
+   "distKm": 1.8
+  },
+  {
+   "id": "seed_205oxfordE",
+   "address": "205 Oxford St E",
+   "area": "East London",
+   "type": "apt",
+   "price": 775,
+   "basis": "perBed",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 775
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "may be last year's listing"
+   ],
+   "utilities": "extra"
+  },
+  {
+   "id": "seed_1231richmond",
+   "address": "1231 Richmond St",
+   "area": "Old North",
+   "type": "apt",
+   "price": 1805,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1805
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": []
+  },
+  {
+   "id": "seed_thew_2bd",
+   "address": "The W (2 bed)",
+   "area": "West London",
+   "type": "apt",
+   "price": 1225,
+   "basis": "perBed",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1225
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [
+    "currently unavailable"
+   ],
+   "builtYear": 2018,
+   "distKm": 5.5
+  },
+  {
+   "id": "seed_498queens",
+   "address": "498 Queens Ave",
+   "area": "Downtown",
+   "type": "apt",
+   "price": 1770,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1770
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true
+  },
+  {
+   "id": "seed_500gordon",
+   "address": "500 Gordon St",
+   "area": "Near West",
+   "type": "apt",
+   "price": 1675,
+   "basis": "total",
+   "beds": 2,
+   "source": "Manual search (Nov 24)",
+   "url": "",
+   "status": "active",
+   "isNew": true,
+   "firstSeen": "2026-11-24",
+   "lastSeen": "2026-11-24",
+   "missed": 0,
+   "priceHistory": [
+    {
+     "d": "2026-11-24",
+     "p": 1675
+    }
+   ],
+   "priceDrop": false,
+   "detail": false,
+   "flags": [],
+   "pricePlus": true
+  }
+ ]
+}
