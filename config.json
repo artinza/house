@@ -1,6 +1,6 @@
 {
   "provider": "gemini",
-  "model": "gemini-2.5-flash",
+  "model": "auto",
   "maxRequestsPerRun": 60,
   "llmDelaySeconds": 7,
   "maxListingsPerRun": 400,

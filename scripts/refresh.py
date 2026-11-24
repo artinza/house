@@ -112,9 +112,39 @@ def _gemini_schema(node):
         return [_gemini_schema(x) for x in node]
     return node
 
+_model = None
+def pick_model():
+    """Use config model if it exists, else the newest plain Gemini flash model this key can call."""
+    global _model
+    if _model:
+        return _model
+    import requests
+    key = {"x-goog-api-key": os.environ["GEMINI_API_KEY"]}
+    names = []
+    url = "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200"
+    while url:
+        j = requests.get(url, headers=key, timeout=30).json()
+        names += [m["name"].split("/")[-1] for m in j.get("models", []) if "generateContent" in m.get("supportedGenerationMethods", [])]
+        url = ("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&pageToken=" + j["nextPageToken"]) if j.get("nextPageToken") else None
+    want = CFG.get("model")
+    if want in names:
+        _model = want
+    else:
+        def ver(n):
+            m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-flash", n)
+            return float(m.group(1)) if m else -1
+        flash = sorted((n for n in names if ver(n) > 0), key=ver, reverse=True)
+        lite = sorted((n for n in names if re.fullmatch(r"gemini-[\d.]+-flash-lite", n)), reverse=True)
+        pool = flash or lite
+        if not pool:
+            raise RuntimeError("No usable Gemini model for this key. Models seen: " + ", ".join(names[:15]))
+        _model = pool[0]
+    print("Using Gemini model:", _model)
+    return _model
+
 def _post_gemini(prompt):
     import requests
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{CFG['model']}:generateContent"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{pick_model()}:generateContent"
     body = {"systemInstruction": {"parts": [{"text": SYSTEM}]},
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
             "generationConfig": {"responseMimeType": "application/json", "responseSchema": _gemini_schema(SCHEMA),
@@ -127,7 +157,8 @@ def _post_gemini(prompt):
             time.sleep(20 * (attempt + 1)); continue
         if r.status_code >= 500:
             time.sleep(10 * (attempt + 1)); continue
-        r.raise_for_status()
+        if r.status_code >= 400:
+            raise RuntimeError(f"Gemini {r.status_code}: {r.text[:300]}")
         j = r.json()
         cand = (j.get("candidates") or [{}])[0]
         if cand.get("finishReason") == "MAX_TOKENS":
