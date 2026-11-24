@@ -142,7 +142,7 @@ def pick_model():
             raise RuntimeError("No usable Gemini model for this key. Models seen: " + ", ".join(names[:15]))
         _model = pool[0]
         _cands = pool[1:4] + [n for n in lite if n not in pool][:2]
-    print("Using Gemini model:", _model)
+    print("Using Gemini model:", _model, "| available:", ", ".join(names[:40]))
     return _model
 
 def _post_gemini(prompt):
@@ -157,13 +157,15 @@ def _post_gemini(prompt):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{pick_model()}:generateContent"
         r = requests.post(url, json=body, headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]}, timeout=180)
         last = f"{r.status_code} {r.text[:400]}"
+        if r.status_code >= 400:
+            print("  Gemini error:", last.replace("\n", " ")[:600], "| model:", _model, "| fallbacks:", _cands)
         if r.status_code in (404, 403) or (r.status_code == 429 and re.search(r"limit:\s*0", r.text)):
             if _cands:  # this model is not usable on the free tier, move to the next one
                 print(f"  model {_model} unusable ({r.status_code}), switching to {_cands[0]}")
                 _model = _cands.pop(0); continue
         if r.status_code == 429:
             if "PerDay" in r.text or "per day" in r.text.lower():
-                raise BudgetExceeded("daily free quota used up")
+                raise BudgetExceeded("daily free quota used up: " + r.text[:200].replace("\n", " "))
             time.sleep(25 * (attempt + 1)); continue
         if r.status_code >= 500:
             time.sleep(10 * (attempt + 1)); continue
