@@ -113,9 +113,10 @@ def _gemini_schema(node):
     return node
 
 _model = None
+_cands = []
 def pick_model():
     """Use config model if it exists, else the newest plain Gemini flash model this key can call."""
-    global _model
+    global _model, _cands
     if _model:
         return _model
     import requests
@@ -129,6 +130,7 @@ def pick_model():
     want = CFG.get("model")
     if want in names:
         _model = want
+        _cands = [want]
     else:
         def ver(n):
             m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-flash", n)
@@ -139,32 +141,40 @@ def pick_model():
         if not pool:
             raise RuntimeError("No usable Gemini model for this key. Models seen: " + ", ".join(names[:15]))
         _model = pool[0]
+        _cands = pool[1:4] + [n for n in lite if n not in pool][:2]
     print("Using Gemini model:", _model)
     return _model
 
 def _post_gemini(prompt):
     import requests
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{pick_model()}:generateContent"
     body = {"systemInstruction": {"parts": [{"text": SYSTEM}]},
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
             "generationConfig": {"responseMimeType": "application/json", "responseSchema": _gemini_schema(SCHEMA),
                                  "maxOutputTokens": 30000, "temperature": 0}}
-    for attempt in range(4):
+    global _model
+    last = ""
+    for attempt in range(5):
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{pick_model()}:generateContent"
         r = requests.post(url, json=body, headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]}, timeout=180)
+        last = f"{r.status_code} {r.text[:400]}"
+        if r.status_code in (404, 403) or (r.status_code == 429 and re.search(r"limit:\s*0", r.text)):
+            if _cands:  # this model is not usable on the free tier, move to the next one
+                print(f"  model {_model} unusable ({r.status_code}), switching to {_cands[0]}")
+                _model = _cands.pop(0); continue
         if r.status_code == 429:
             if "PerDay" in r.text or "per day" in r.text.lower():
                 raise BudgetExceeded("daily free quota used up")
-            time.sleep(20 * (attempt + 1)); continue
+            time.sleep(25 * (attempt + 1)); continue
         if r.status_code >= 500:
             time.sleep(10 * (attempt + 1)); continue
         if r.status_code >= 400:
-            raise RuntimeError(f"Gemini {r.status_code}: {r.text[:300]}")
+            raise RuntimeError(f"Gemini {last}")
         j = r.json()
         cand = (j.get("candidates") or [{}])[0]
         if cand.get("finishReason") == "MAX_TOKENS":
             raise OverflowError("truncated")
         return "".join(p.get("text", "") for p in cand.get("content", {}).get("parts", []))
-    raise RuntimeError("Gemini kept failing")
+    raise RuntimeError("Gemini kept failing: " + last)
 
 def call_llm(text, page_url, source):
     """Returns a list of raw listing dicts. Replaced by a fake in tests."""
