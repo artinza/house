@@ -72,6 +72,8 @@ def html_to_text(html, base):
         img.decompose()
     text = soup.get_text("\n", strip=True)
     text = re.sub(r"\n{3,}", "\n\n", text)
+    lim = CFG.get("maxLineChars", 280)  # long descriptions are what blow up the size, the key facts are short lines
+    text = "\n".join((ln[:lim] + "...") if len(ln) > lim and not ln.startswith("<http") else ln for ln in text.split("\n"))
     return text[: CFG["maxCharsPerPage"]]
 
 def fetch(url, tries=3):
@@ -164,7 +166,10 @@ def _post_gemini(prompt):
                 raise BudgetExceeded("daily free quota used up: " + r.text[:200].replace("\n", " "))
             time.sleep(25 * (attempt + 1)); continue
         if r.status_code >= 500:
-            time.sleep(10 * (attempt + 1)); continue
+            if attempt % 2 == 1 and _cands:
+                print(f"  model {_model} overloaded, switching to {_cands[0]}")
+                _cands.append(_model); _model = _cands.pop(0)
+            time.sleep(15 * (attempt + 1)); continue
         if r.status_code >= 400:
             raise RuntimeError(f"Gemini {last}")
         j = r.json()
@@ -197,6 +202,9 @@ def call_llm(text, page_url, source):
     return json.loads(out).get("listings", [])
 
 def extract(text, page_url, source, depth=0):
+    if len(text) > CFG.get("chunkChars", 45000) and depth < 3:
+        mid = text.rfind("\n", 0, len(text) // 2)
+        return extract(text[:mid], page_url, source, depth + 1) + extract(text[mid:], page_url, source, depth + 1)
     try:
         return call_llm(text, page_url, source)
     except OverflowError:
@@ -238,7 +246,7 @@ def normalise(raw, source):
         if not unk(raw.get(k)):
             d[k] = raw[k]
     for k in ("utilNote", "availFrom", "tenantType", "deal", "notes"):
-        if raw.get(k):
+        if raw.get(k) and str(raw[k]).lower() != "unknown":
             d[k] = raw[k]
     for k in ("laundry", "furnished"):
         if not unk(raw.get(k)):
@@ -317,7 +325,9 @@ def run(only=None, dry=False):
                 text = fetch(u)
                 rows = [normalise(r, src) for r in extract(text, u, src)]
                 rows = [r for r in rows if r]
-                print(f"{src['name']}: {u} -> {len(rows)} listings")
+                print(f"{src['name']}: {u} -> {len(rows)} listings (page text {len(text)} chars)")
+                if len(rows) < 3:
+                    print("   sample:", text[:300].replace("\n", " | "))
                 got += rows
                 if src["kind"] == "board" and not rows:
                     break  # ran past the last page
@@ -326,9 +336,9 @@ def run(only=None, dry=False):
                 print(f"STOP: {e}", file=sys.stderr)
                 break
             except Exception as e:
-                errors.append(str(e)[:200]); failed = True
+                errors.append(src["name"] + ": " + str(e)[:200]); failed = True
                 print(f"{src['name']}: FAILED {u}: {e}", file=sys.stderr)
-                if src["kind"] == "board":
+                if src["kind"] == "board" and sum(1 for x in errors if x.startswith(src["name"])) >= 0 and len([e for e in errors if "Gemini" in e]) >= 3:
                     break
             time.sleep(CFG["delaySeconds"])
         if not failed and got:
