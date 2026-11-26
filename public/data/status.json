@@ -1,13 +1,13 @@
 {
- "lastRun": "2026-11-24T15:41:22+00:00",
+ "lastRun": "2026-11-26T19:58:37+00:00",
  "removedCount": 0,
- "sourcesOk": [],
- "errors": [
-  "https://www.liv.rent/rental-listings/western-university: HTTP 403",
-  "Gemini kept failing: 503 {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status",
-  "Gemini kept failing: 503 {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status",
-  "https://rentals.ca/london/2-bedroom-apartments: HTTP 403",
-  "Gemini kept failing: 503 {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status"
+ "sourcesOk": [
+  "Kijiji",
+  "Western Off-Campus Housing"
  ],
- "total": 29
+ "errors": [
+  "Liv.rent: https://www.liv.rent/rental-listings/western-university: HTTP 403",
+  "Rentals.ca: https://rentals.ca/london/2-bedroom-apartments: HTTP 403"
+ ],
+ "total": 467
 }
