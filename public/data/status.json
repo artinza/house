@@ -1,5 +1,5 @@
 {
- "lastRun": "2026-11-26T19:58:37+00:00",
+ "lastRun": "2026-11-27T19:46:58+00:00",
  "removedCount": 0,
  "sourcesOk": [
   "Kijiji",
@@ -9,5 +9,5 @@
   "Liv.rent: https://www.liv.rent/rental-listings/western-university: HTTP 403",
   "Rentals.ca: https://rentals.ca/london/2-bedroom-apartments: HTTP 403"
  ],
- "total": 467
+ "total": 515
 }
